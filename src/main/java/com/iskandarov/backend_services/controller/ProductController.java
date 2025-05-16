@@ -4,6 +4,8 @@ import com.iskandarov.backend_services.dto.ProductCreateRequest;
 import com.iskandarov.backend_services.entity.Product;
 import com.iskandarov.backend_services.exception.ProductNotFoundException;
 import com.iskandarov.backend_services.service.ProductService;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,14 +17,17 @@ import java.util.List;
 public class ProductController {
 
   private final ProductService productService;
+  private final Counter productCreationCounter;
 
-  public ProductController(ProductService productService) {
+  public ProductController(ProductService productService, MeterRegistry meterRegistry) {
     this.productService = productService;
+    this.productCreationCounter = meterRegistry.counter("api.products.created");
   }
 
   @PostMapping
   public ResponseEntity<Product> createProduct(@RequestBody ProductCreateRequest product) {
     Product savedProduct = productService.createProduct(product);
+    productCreationCounter.increment();
     return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
   }
 
