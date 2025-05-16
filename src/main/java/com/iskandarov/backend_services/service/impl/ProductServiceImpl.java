@@ -1,6 +1,8 @@
 package com.iskandarov.backend_services.service.impl;
 
+import com.iskandarov.backend_services.dto.ProductCreateRequest;
 import com.iskandarov.backend_services.entity.Product;
+import com.iskandarov.backend_services.exception.ProductNotFoundException;
 import com.iskandarov.backend_services.repository.ProductRepository;
 import com.iskandarov.backend_services.service.ProductService;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,11 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  public Product createProduct(Product product) {
+  public Product createProduct(ProductCreateRequest productRequest) {
+    Product product = new Product();
+    product.setName(productRequest.getName());
+    product.setDescription(productRequest.getDescription());
+    product.setPrice(productRequest.getPrice());
     return productRepository.save(product);
   }
 
@@ -33,13 +39,13 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  public Product updateProduct(Long id, Product updatedProduct) {
-    Optional<Product> existingProduct = productRepository.findById(id);
-    if (existingProduct.isPresent()) {
-      updatedProduct.setId(id);
-      return productRepository.save(updatedProduct);
-    }
-    return null;
+  public Product updateProduct(Long id, ProductCreateRequest updatedProduct) {
+    Product productToUpdate = productRepository.findById(id)
+            .orElseThrow(() -> new ProductNotFoundException(id));
+    productToUpdate.setName(updatedProduct.getName());
+    productToUpdate.setDescription(updatedProduct.getDescription());
+    productToUpdate.setPrice(updatedProduct.getPrice());
+    return productRepository.save(productToUpdate);
   }
 
   @Override
