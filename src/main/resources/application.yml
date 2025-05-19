@@ -1,6 +1,19 @@
 spring:
   application:
     name: backend-services
+  datasource:
+    url: jdbc:h2:mem:mydb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
 management:
   endpoints:
     web:
@@ -14,16 +27,5 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
-  datasource:
-    url: jdbc:h2:mem:mydb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: create-drop # or update, create, validate
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+jwt:
+  secret: myVeryLongJWTSecretKey
