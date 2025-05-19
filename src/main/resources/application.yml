@@ -1,6 +1,14 @@
 spring:
   application:
     name: backend-services
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+  endpoint:
+    health:
+      show-details: always
 springdoc:
   api-docs:
     path: /api-docs
